@@ -1,0 +1,44 @@
+on:
+  pull_request:
+
+# outputs:
+#   random-number: 
+#     description: "Random number"
+#     value: ${{ steps.random-number-generator.outputs.random-id }}
+# runs:
+#   using: "composite"
+#   steps: 
+#     - id: random-number-generator
+#       run: echo "::set-output name=random-id::$(echo $RANDOM)"
+#       shell: bash
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - id: output
+        name: output
+        run: echo "::set-output name=random-id::$(echo $RANDOM)" 
+          
+      - uses: actions/github-script@v3
+        env:
+          OUTPUT: ${{ steps.output.outputs.random-id }}
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const body = `
+            <details><summary>Show Plan</summary>
+            
+            \`\`\`diff            
+            - test
+            + add  
+            \`\`\`
+            
+            </details>
+            `;
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            })
