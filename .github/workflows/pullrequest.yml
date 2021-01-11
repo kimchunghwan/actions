@@ -22,7 +22,7 @@ jobs:
       - name: diff_print
         id: diff
         run: |
-          git diff --no-index pullrequest.yml  --no-color >> diff.txt 
+          git diff --no-index pullrequest.yml greetings.yml --no-color >> diff.txt 
           echo "::set-output name=diff::$(cat diff.txt)" 
         continue-on-error: true
       
