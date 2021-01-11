@@ -1,0 +1,50 @@
+name: pr_comment_diff
+
+on:
+  pull_request:
+
+
+jobs:
+  diffPrint:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: 'https://npm.pkg.github.com/'
+
+      - uses: actions/checkout@v2
+
+      - name: npm print
+        run: |
+          npm ci
+          npx sls print -c serverless.ts -s cloud >> print.txt
+      - name: diff_print
+        id: diff
+        run: |
+          git diff --no-index pullrequest.yml  --no-color >> diff.txt 
+          echo "::set-output name=diff::$(cat diff.txt)" 
+        continue-on-error: true
+      
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
+        env:
+         STDOUT: "${{ steps.diff.outputs.diff }}"
+        with:
+         github-token: ${{ secrets.GITHUB_TOKEN }}
+         script: |
+          const output = `
+          <details><summary>Show DIFF</summary>
+          \`\`\`diff
+          
+          ${process.env.STDOUT}
+          
+          \`\`\`
+          </details>
+          `;
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
