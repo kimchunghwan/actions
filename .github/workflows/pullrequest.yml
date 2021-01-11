@@ -14,11 +14,7 @@ jobs:
           registry-url: 'https://npm.pkg.github.com/'
 
       - uses: actions/checkout@v2
-
-      - name: npm print
-        run: |
-          npm ci
-          npx sls print -c serverless.ts -s cloud >> print.txt
+        
       - name: diff_print
         id: diff
         run: |
