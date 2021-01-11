@@ -25,6 +25,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
          STDOUT: "${{ steps.diff.outputs.stdout }}"
+         STDERR: "${{ steps.diff.outputs.stderr }}"
         with:
          github-token: ${{ secrets.GITHUB_TOKEN }}
          script: |
@@ -34,6 +35,13 @@ jobs:
           ${process.env.STDOUT}
           
           \`\`\`
+          
+          \`\`\`diff
+          
+          ${process.env.STDERR}
+          
+          \`\`\`
+          
           `;
           github.issues.createComment({
             issue_number: context.issue.number,
