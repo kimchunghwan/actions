@@ -25,7 +25,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
          STDOUT: "${{ steps.diff.outputs.stdout }}"
-         STDERR: "${{ steps.diff.outputs.stderr }}"
+         STDERR: "${{ steps.diff.outputs.stdin }}"
         with:
          github-token: ${{ secrets.GITHUB_TOKEN }}
          script: |
