@@ -18,25 +18,22 @@ jobs:
       - name: diff_print
         id: diff
         run: |
-          git diff --no-index pullrequest.yml greetings.yml --no-color >> diff.txt 
-          echo "::set-output name=diff::$(cat diff.txt)" 
+          git diff --no-index pullrequest.yml greetings.yml --no-color
         continue-on-error: true
       
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
-         STDOUT: "${{ steps.diff.outputs.diff }}"
+         STDOUT: "${{ steps.diff.outputs.stdout }}"
         with:
          github-token: ${{ secrets.GITHUB_TOKEN }}
          script: |
           const output = `
-          <details><summary>Show DIFF</summary>
           \`\`\`diff
           
           ${process.env.STDOUT}
           
           \`\`\`
-          </details>
           `;
           github.issues.createComment({
             issue_number: context.issue.number,
