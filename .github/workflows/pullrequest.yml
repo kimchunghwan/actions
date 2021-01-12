@@ -19,7 +19,7 @@ jobs:
         id: diff
         run: |
           git diff --no-index .github/workflows/pullrequest.yml .github/workflows/greetings.yml --no-color > diff.txt || cat diff.txt
-          echo "::set-output name=aaa::$(git diff --no-index .github/workflows/pullrequest.yml .github/workflows/greetings.yml --no-color)"
+          echo "::set-output name=aaa::$(diff .github/workflows/pullrequest.yml .github/workflows/greetings.yml)"
         continue-on-error: true
       
       - uses: actions/github-script@0.9.0
