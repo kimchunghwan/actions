@@ -18,15 +18,14 @@ jobs:
       - name: diff_print
         id: diff
         run: |
-          git diff --no-index .github/workflows/pullrequest.yml .github/workflows/greetings.yml --no-color > diff.txt || cat diff.txt
-          echo "::set-output name=aaa::$(diff .github/workflows/pullrequest.yml .github/workflows/greetings.yml)"
+          git diff --no-index .github/workflows/pullrequest.yml .github/workflows/greetings.yml --no-color 2>&1
         continue-on-error: true
       
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
          STDOUT: "${{ steps.diff.outputs.stdout }}"
-         STDERR: "${{ steps.diff.outputs.aaa }}"
+         STDERR: "${{ steps.diff.outputs.stderr }}"
         with:
          github-token: ${{ secrets.GITHUB_TOKEN }}
          script: |
